@@ -82,7 +82,7 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
-              <Link href={createPageUrl("Dashboard")}>
+              <Link href="/dashboard">
                 <Button
                   size="lg"
                   className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40 transition-all duration-200 text-lg"
@@ -173,7 +173,7 @@ export default function Home() {
                 ))}
               </div>
 
-              <Link href={createPageUrl("Dashboard")}>
+              <Link href="/dashboard">
                 <Button
                   size="lg"
                   className="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-8 py-4 rounded-xl shadow-lg shadow-slate-900/25 hover:shadow-slate-900/40 transition-all duration-200"
@@ -287,7 +287,7 @@ export default function Home() {
                 protect their wealth in emerging markets.
               </p>
 
-              <Link href={createPageUrl("Dashboard")}>
+              <Link href="/dashboard">
                 <Button
                   size="lg"
                   className="bg-white text-emerald-600 hover:bg-emerald-50 font-bold px-10 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-lg"
