@@ -66,24 +66,25 @@ export default function Home() {
           <div className="text-center space-y-8">
             <Badge
               variant="outline"
-              className="bg-emerald-50 text-emerald-700 border-emerald-200 font-medium px-4 py-2 text-sm"
+              className="bg-emerald-50 text-emerald-700 text-emerald-400 font-medium px-4 py-2 text-sm"
             >
               <Sparkles className="w-4 h-4 mr-2" />
               AI-Powered Investment Platform
             </Badge>
 
             <div className="space-y-6">
-              <h1 className="text-5xl lg:text-7xl font-bold text-slate-900 tracking-tight leading-tight">
+              <h1 className="text-5xl lg:text-7xl font-bold text-emerald-700 to-blue-50/30 tracking-tight leading-tight">
                 Protect Your Savings with{" "}
                 <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
-                  AI-Powered Investing
+                  : InchVest
                 </span>
               </h1>
 
               <p className="text-xl lg:text-2xl text-slate-600 font-medium max-w-4xl mx-auto leading-relaxed">
-                Simple, secure investing designed for professionals in emerging
-                markets. Protect your savings from currency instability while
-                earning better returns than traditional banks.
+                InchVest enables simple, secure investing designed for
+                professionals in emerging markets. Protect your savings from
+                currency instability while earning better returns than
+                traditional banks.
               </p>
             </div>
 
