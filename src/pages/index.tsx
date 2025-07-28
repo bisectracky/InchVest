@@ -66,7 +66,7 @@ export default function Home() {
           <div className="text-center space-y-8">
             <Badge
               variant="outline"
-              className="bg-emerald-50 text-emerald-700 text-emerald-400 font-medium px-4 py-2 text-sm"
+              className="bg-emerald-600 text-emerald-700 to-blue-600 font-medium px-4 py-2 text-sm"
             >
               <Sparkles className="w-4 h-4 mr-2" />
               AI-Powered Investment Platform
