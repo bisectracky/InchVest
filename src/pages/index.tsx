@@ -25,21 +25,27 @@ export default function Home() {
   const features: Feature[] = [
     {
       icon: Shield,
-      title: "Currency Protection",
+      title: "Secure & Protected",
       description:
-        "Shield your savings from local currency volatility with diversified global investments.",
+        "Your funds are protected by bank-level security and insurance coverage.",
     },
     {
       icon: Sparkles,
-      title: "AI-Powered Strategy",
+      title: "AI-Optimized Returns",
       description:
         "Advanced algorithms optimize your portfolio for emerging market conditions.",
     },
     {
       icon: BarChart3,
-      title: "Superior Returns",
+      title: "Simple Payments",
       description:
-        "Earn significantly better returns than traditional bank savings accounts.",
+        "Send money to businesses instantly with just a QR code or business search.",
+    },
+    {
+      icon: BarChart3,
+      title: "Built for Emerging Markets",
+      description:
+        "Designed specifically for professionals and business owners in developing economies.",
     },
   ];
 
@@ -85,10 +91,10 @@ export default function Home() {
               <Link href="/dashboard">
                 <Button
                   size="lg"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40 transition-all duration-200 text-lg"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-10 py-4 rounded-xl shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40 transition-all duration-200 text-lg"
                 >
                   Get Started Today
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <ArrowRight className="w-5 h-5 ml-16" />
                 </Button>
               </Link>
 
@@ -108,15 +114,15 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-6 py-20">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-slate-900 tracking-tight mb-4">
-            Why Choose InchVest?
+            Everything you need to grow your wealth
           </h2>
           <p className="text-lg text-slate-600 font-medium max-w-2xl mx-auto">
-            Built specifically for professionals who need intelligent investment
-            solutions in volatile economic environments.
+            We've simplified modern investing to work just like your favorite
+            banking app
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-4 gap-8">
           {features.map((feature, index) => (
             <Card
               key={index}
@@ -179,7 +185,7 @@ export default function Home() {
                   className="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-8 py-4 rounded-xl shadow-lg shadow-slate-900/25 hover:shadow-slate-900/40 transition-all duration-200"
                 >
                   Start Investing Now
-                  <TrendingUp className="w-5 h-5 ml-2" />
+                  <TrendingUp className="w-5 h-5 ml-15" />
                 </Button>
               </Link>
             </div>
@@ -293,7 +299,7 @@ export default function Home() {
                   className="bg-white text-emerald-600 hover:bg-emerald-50 font-bold px-10 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-lg"
                 >
                   Open Your Account
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <ArrowRight className="w-5 h-5 ml-18" />
                 </Button>
               </Link>
             </div>
