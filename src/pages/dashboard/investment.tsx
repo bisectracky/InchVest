@@ -141,8 +141,9 @@ export default function InvestPage() {
 
   const handleContinue = () => {
     // Navigate to step 2 or complete investment
+
     console.log("Continue with:", selectedOption, "Amount:", investmentAmount);
-    // router.push("/invest/confirm")
+    router.push("/dashboard/investment_confirmation");
   };
 
   return (
@@ -215,16 +216,6 @@ export default function InvestPage() {
 
           {/* Investment Options */}
           <div className="space-y-4">
-            <InvestmentOption
-              icon={<BarChart3 className="w-6 h-6" />}
-              title="Conservative"
-              description="Lower risk, steady returns"
-              expectedReturn="5-7%"
-              risk="Low"
-              isSelected={selectedOption === "conservative"}
-              onClick={() => setSelectedOption("conservative")}
-            />
-
             <InvestmentOption
               icon={<TrendingUp className="w-6 h-6" />}
               title="Balanced"
