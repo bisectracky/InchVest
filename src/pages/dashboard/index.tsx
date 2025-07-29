@@ -112,6 +112,7 @@ export default function Dashboard() {
 
   const handleAddFunds = () => {
     console.log("Add funds clicked");
+    router.push("/dashboard/add_funding");
   };
 
   const handleSendMoney = () => {
