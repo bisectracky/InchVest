@@ -21,9 +21,9 @@ const config = {
   privateKey: process.env.PRIVATE_KEY! as Hex,
   apiKey: process.env.DEV_PORTAL_API_KEY!,
   rpcUrl: process.env.RPC_URL!,
-  tokenAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC on Base
-  amountToSwap: 10_000, // 0.01 USDC
-  dstToken: "0x4200000000000000000000000000000000000006", // WETH on Base
+  tokenAddress: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", // USDC on ETH
+  amountToSwap: 1000_000, // 0.01 USDC
+  dstToken: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", // WETH on ETH
   slippage: 1,
 };
 
