@@ -134,8 +134,8 @@ export default function InvestConfirmPage() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    // Navigate to success page or dashboard
-    router.push("/dashboard");
+    // Navigate to success page
+    router.push("/dashboard/success");
     setIsActivating(false);
   };
 
