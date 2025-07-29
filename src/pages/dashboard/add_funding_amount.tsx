@@ -90,7 +90,7 @@ export default function AddFundsAmountPage() {
             variant="ghost"
             size="sm"
             onClick={handleBack}
-            className="p-2 hover:bg-gray-100 rounded-full"
+            className="p-2 text-black hover:bg-gray-500 rounded-full"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>

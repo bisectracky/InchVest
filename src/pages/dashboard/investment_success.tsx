@@ -91,10 +91,10 @@ const NextStepItem = ({
 export default function InvestSuccessPage() {
   const router = useRouter();
   const [investmentAmount] = useState(2000);
-
+  /*
   const handleBack = () => {
     router.push("/dashboard/investment_confirmation");
-  };
+  };*/
 
   const handleViewDashboard = () => {
     router.push("/dashboard");
@@ -103,16 +103,15 @@ export default function InvestSuccessPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex items-center gap-4 py-6 sm:py-8">
-          <Button
+        {/* Header <Button
             variant="ghost"
             size="sm"
             onClick={handleBack}
             className="p-2 hover:bg-gray-100 rounded-full"
           >
             <ArrowLeft className="w-5 h-5" />
-          </Button>
+          </Button>*/}
+        <div className="flex items-center gap-4 py-6 sm:py-8">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 relative">
               <Image

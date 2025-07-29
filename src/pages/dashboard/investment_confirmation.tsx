@@ -135,7 +135,7 @@ export default function InvestConfirmPage() {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Navigate to success page
-    router.push("/dashboard/success");
+    router.push("/dashboard/investment_success");
     setIsActivating(false);
   };
 
@@ -148,7 +148,7 @@ export default function InvestConfirmPage() {
             variant="ghost"
             size="sm"
             onClick={handleBack}
-            className="p-2 hover:bg-gray-100 rounded-full"
+            className="p-2 text-black hover:bg-gray-500 rounded-full"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
