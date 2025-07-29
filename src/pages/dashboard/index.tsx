@@ -86,6 +86,7 @@ export default function Dashboard() {
   const [authenticated] = useState(true);
   const [ready] = useState(true);
   const [client] = useState(true);
+  const router = useRouter();
 
   const handleSignMessage = async () => {
     try {
@@ -123,6 +124,7 @@ export default function Dashboard() {
 
   const handleStartInvesting = () => {
     console.log("Start investing clicked");
+    router.push("/dashboard/investment"); // replace with your path
   };
 
   const logout = () => {
@@ -186,6 +188,7 @@ export default function Dashboard() {
             >
               <User className="w-4 h-4" />
             </Button>
+
             <Button
               variant="ghost"
               size="sm"
@@ -194,7 +197,8 @@ export default function Dashboard() {
             >
               <LogOut className="w-4 h-4" />
             </Button>
-            <Card className="bg-gradient-to-br from-green-600 via-grey to-blue-500 text-white shadow-2xl rounded-3xl overflow-hidden">
+
+            <Card className="bg-gradient-to-br from-green-600 via-grey to-blue-500 text-white shadow-2xl rounded-3xl">
               <Link
                 href="/"
                 className="bg-white/20 text-white border border-white/30 font-medium px-6 py-2 rounded-full hover:bg-white/30 hover:text-white transition-all duration-300 inline-block text-center"
