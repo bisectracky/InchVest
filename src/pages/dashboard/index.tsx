@@ -1,5 +1,7 @@
 "use client";
 import type React from "react";
+import Link from "next/link";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { usePrivy } from "@privy-io/react-auth";
@@ -8,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Plus,
+  Minus,
   Send,
   ArrowDownToLine,
   Shield,
@@ -164,6 +167,16 @@ export default function Dashboard() {
             >
               <LogOut className="w-4 h-4" />
             </Button>
+            <Card className="bg-gradient-to-br from-green-600 via-grey to-blue-500 text-white shadow-2xl rounded-3xl overflow-hidden">
+              <Link href="/" passHref>
+                <Button
+                  className="bg-white/20 text-white border border-white/30 font-medium px-6 py-2 rounded-full hover:bg-white/30 hover:text-white transition-all duration-300"
+                  size="sm"
+                >
+                  Back to Home
+                </Button>
+              </Link>
+            </Card>
           </div>
 
           {/* Mobile Menu Button */}
@@ -306,27 +319,68 @@ export default function Dashboard() {
             <div className="grid grid-cols-3 gap-3 sm:gap-4">
               <Button
                 variant="outline"
-                className="flex flex-col items-center gap-2 h-16 sm:w-auto bg-gradient-to-r from-green-300 to-green-200 rounded-3xl text-green-500 border-green-500 shadow-md transition hover:brightness-105"
+                className="group relative flex flex-col justify-center items-center gap-2 h-20 sm:h-24 bg-gradient-to-br from-green-400 via-green-300 to-emerald-200 hover:from-green-500 hover:via-green-400 hover:to-emerald-300 rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 overflow-hidden"
                 onClick={handleAddFunds}
               >
-                <Plus className="w-5 h-5 sm:w-6 sm:h-8 text-green-800" />
-                <span className="text-xs sm:text-sm">Add Funds</span>
+                {/* Background glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                {/* Icon with animation */}
+                <div className="relative z-10 p-2 bg-white/20 rounded-full group-hover:bg-white/30 transition-all duration-300">
+                  <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-green-800 group-hover:text-green-900 transition-colors duration-300" />
+                </div>
+
+                {/* Text */}
+                <span className="relative z-10 text-xs sm:text-sm font-semibold text-green-800 group-hover:text-green-900 transition-colors duration-300">
+                  Add Funds
+                </span>
+
+                {/* Shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               </Button>
+
               <Button
                 variant="outline"
-                className="flex flex-col items-center gap-2 h-16 sm:w-auto bg-gradient-to-r from-blue-300 to-blue-200 rounded-3xl text-blue-500 border-blue-500 shadow-md transition hover:brightness-105"
+                className="group relative flex flex-col justify-center items-center gap-2 h-20 sm:h-24 bg-gradient-to-br from-blue-400 via-blue-300 to-cyan-200 hover:from-blue-500 hover:via-blue-400 hover:to-cyan-300 rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 overflow-hidden"
                 onClick={handleSendMoney}
               >
-                <Send className="w-5 h-5 sm:w-6 sm:h-8 text-blue-800" />
-                <span className="text-xs sm:text-sm">Send Money</span>
+                {/* Background glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                {/* Icon with animation */}
+                <div className="relative z-10 p-2 bg-white/20 rounded-full group-hover:bg-white/30 transition-all duration-300 group-hover:rotate-12">
+                  <Send className="w-5 h-5 sm:w-6 sm:h-6 text-blue-800 group-hover:text-blue-900 transition-colors duration-300" />
+                </div>
+
+                {/* Text */}
+                <span className="relative z-10 text-xs sm:text-sm font-semibold text-blue-800 group-hover:text-blue-900 transition-colors duration-300">
+                  Send Money
+                </span>
+
+                {/* Shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               </Button>
+
               <Button
                 variant="outline"
-                className="flex flex-col items-center gap-2 h-16 sm:w-auto bg-gradient-to-r from-purple-300 to-purple-200 rounded-3xl text-purple-500 border-purple-500 shadow-md transition hover:brightness-105"
+                className="group relative flex flex-col justify-center items-center gap-2 h-20 sm:h-24 bg-gradient-to-br from-purple-400 via-purple-300 to-pink-200 hover:from-purple-500 hover:via-purple-400 hover:to-pink-300 rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 overflow-hidden"
                 onClick={handleWithdraw}
               >
-                <ArrowDownToLine className="w-5 h-5 sm:w-6 sm:h-8 text-purple-800" />
-                <span className="text-xs sm:text-sm">Withdraw</span>
+                {/* Background glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                {/* Icon with animation */}
+                <div className="relative z-10 p-2 bg-white/20 rounded-full group-hover:bg-white/30 transition-all duration-300 group-hover:-translate-y-1">
+                  <ArrowDownToLine className="w-5 h-5 sm:w-6 sm:h-6 text-purple-800 group-hover:text-purple-900 transition-colors duration-300" />
+                </div>
+
+                {/* Text */}
+                <span className="relative z-10 text-xs sm:text-sm font-semibold text-purple-800 group-hover:text-purple-900 transition-colors duration-300">
+                  Withdraw
+                </span>
+
+                {/* Shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               </Button>
             </div>
           </div>
@@ -417,21 +471,25 @@ export default function Dashboard() {
             </Card>
 
             {/* AI Investment CTA */}
-            <Card className="bg-gradient-to-r from-orange-400 to-green-500 text-white shadow-lg">
-              <CardContent className="p-4 sm:p-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Sparkles className="w-6 h-6" />
+            <Card className="bg-gradient-to-br from-green-600 via-grey to-blue-500 text-white shadow-2xl rounded-3xl overflow-hidden">
+              <CardContent className="p-6 sm:p-8">
+                <div className="flex items-start gap-5">
+                  {/* Icon Circle */}
+                  <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-inner">
+                    <Sparkles className="w-6 h-6 text-white" />
                   </div>
+
+                  {/* Text and Button */}
                   <div className="flex-1">
-                    <h3 className="font-bold text-lg sm:text-xl mb-2">
+                    <h3 className="font-extrabold text-xl sm:text-2xl mb-1 drop-shadow-sm">
                       Start AI Investment
                     </h3>
-                    <p className="text-white/90 text-sm sm:text-base mb-4">
-                      Let our AI optimize your returns automatically
+                    <p className="text-white/90 text-sm sm:text-base mb-5 leading-relaxed">
+                      Let our AI optimize your returns automatically.
                     </p>
+
                     <Button
-                      className="bg-gradient-to-r from-orange-300 to-green-400 text-gray-900 hover:brightness-105 font-semibold w-full sm:w-auto rounded-full px-6 py-2 shadow-md transition"
+                      className="bg-gradient-to-r from-green-600 via-orange-200 to-blue-500 text-gray-900 font-semibold px-6 py-2 rounded-full shadow-md hover:brightness-110 hover:scale-105 transition-all duration-300"
                       size="sm"
                       onClick={handleStartInvesting}
                     >
