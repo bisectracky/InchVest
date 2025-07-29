@@ -1,6 +1,7 @@
 "use client";
 import type React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -119,10 +120,14 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <div className="w-4 h-4 bg-green-600 rounded-full relative">
-              <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-3 bg-green-400 rounded-t-full"></div>
-            </div>
+          <div className="w-16 h-16 mx-auto mb-4 relative">
+            <Image
+              src="/images/inchvest-logo.png"
+              alt="InchVest Logo"
+              width={64}
+              height={64}
+              className="object-contain"
+            />
           </div>
           <p className="text-slate-700">Loading...</p>
         </div>
@@ -138,15 +143,24 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between py-4 sm:py-6 lg:py-8">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-600 rounded-full relative">
-                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-3 bg-green-400 rounded-t-full"></div>
-              </div>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 relative flex-shrink-0">
+              <Image
+                src="/images/inchvest-logo.png"
+                alt="InchVest Logo"
+                width={48}
+                height={48}
+                className="object-contain w-full h-full"
+              />
             </div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-              Inch Vest
-            </h1>
+            <div className="flex flex-col">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-orange-500 to-orange-400 bg-clip-text text-transparent">
+                InchVest
+              </h1>
+              <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
+                Investment Dashboard
+              </p>
+            </div>
           </div>
 
           {/* Desktop Navigation */}
