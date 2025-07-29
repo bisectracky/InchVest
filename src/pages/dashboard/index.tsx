@@ -1,105 +1,451 @@
+"use client";
+import type React from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { usePrivy } from "@privy-io/react-auth";
 import { useSmartWallets } from "@privy-io/react-auth/smart-wallets";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Plus,
+  Send,
+  ArrowDownToLine,
+  Shield,
+  CheckCircle,
+  Clock,
+  Sparkles,
+  User,
+  LogOut,
+  Wallet,
+  Menu,
+} from "lucide-react";
+// Simple Badge component
+const Badge = ({
+  children,
+  className = "",
+  variant = "default",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  variant?: "default" | "secondary";
+}) => {
+  const baseClasses =
+    "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold";
+  const variantClasses =
+    variant === "secondary"
+      ? "border-transparent bg-gray-100 text-gray-800"
+      : "border-transparent bg-blue-100 text-blue-800";
+
+  return (
+    <div className={`${baseClasses} ${variantClasses} ${className}`}>
+      {children}
+    </div>
+  );
+};
+
+// Responsive chart component
+const SimpleChart = () => (
+  <div className="h-32 sm:h-40 flex items-end justify-between px-2 sm:px-4">
+    {[20, 60, 75, 70, 35].map((height, i) => (
+      <div
+        key={i}
+        className="bg-gradient-to-b bg-green-700 bg-green-600  w-6 sm:w-8 md:w-10 rounded-t transition-all duration-300"
+        style={{ height: `${height}%` }}
+      />
+    ))}
+  </div>
+);
 
 export default function Dashboard() {
-  const { user, authenticated, ready, login, logout } = usePrivy();
-  const { client } = useSmartWallets();
+  const [balance] = useState(2000);
+  const [isReady] = useState(true);
   const [signature, setSignature] = useState<string | null>(null);
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (ready && !authenticated) {
-      login();
-    }
-  }, [ready, authenticated]);
+  const [showWalletActions, setShowWalletActions] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [user] = useState({
+    wallet: { address: "0x1234...5678" },
+    email: { address: "user@example.com" },
+  });
+  const [authenticated] = useState(true);
+  const [ready] = useState(true);
+  const [client] = useState(true);
 
   const handleSignMessage = async () => {
-    if (!client) {
-      console.warn("Smart wallet client not ready");
-      return;
-    }
-
     try {
       const message = "Hello from Privy + Pimlico!";
-      const sig = await client.signMessage({
-        message,
-      });
-      setSignature(sig);
-      console.log("Signature:", sig);
+      const mockSig = "0x" + Math.random().toString(16).substring(2, 66);
+      setSignature(mockSig);
+      console.log("Signature:", mockSig);
     } catch (err) {
       console.error("Signing failed:", err);
     }
   };
 
   const handleSendTransaction = async () => {
-  if (!client) {
-    console.warn("Smart wallet client not ready");
-    return;
+    try {
+      const userOpHash = "0x" + Math.random().toString(16).substring(2, 66);
+      console.log("UserOp sent:", userOpHash);
+      alert(`Transaction sent!\nUserOp Hash:\n${userOpHash}`);
+    } catch (err) {
+      console.error("Transaction failed:", err);
+      alert("Transaction failed. See console.");
+    }
+  };
+
+  const handleAddFunds = () => {
+    console.log("Add funds clicked");
+  };
+
+  const handleSendMoney = () => {
+    handleSendTransaction();
+  };
+
+  const handleWithdraw = () => {
+    console.log("Withdraw clicked");
+  };
+
+  const handleStartInvesting = () => {
+    console.log("Start investing clicked");
+  };
+
+  const logout = () => {
+    console.log("Logout clicked");
+  };
+
+  if (!ready) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-4 h-4 bg-green-600 rounded-full relative">
+              <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-3 bg-green-400 rounded-t-full"></div>
+            </div>
+          </div>
+          <p className="text-slate-700">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
-  try {
-const userOpHash = await client.sendTransaction({
-  to: "0x000000000000000000000000000000000000dead",
-  value: BigInt(0),
-});
-
-console.log("UserOp sent:", userOpHash);
-alert(`Transaction sent!\nUserOp Hash:\n${userOpHash}`);
-  } catch (err) {
-    console.error("Transaction failed:", err);
-    alert("Transaction failed. See console.");
-  }
-};
-
-  if (!ready) return <p className="p-8 text-slate-700">Loading...</p>;
   if (!authenticated) return null;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-white to-slate-100 text-slate-800">
-      <div className="bg-white p-8 rounded-xl shadow-xl max-w-lg w-full text-center space-y-6">
-        <h1 className="text-3xl font-bold">Welcome to Your Dashboard</h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Container with responsive max-width */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex items-center justify-between py-4 sm:py-6 lg:py-8">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-600 rounded-full relative">
+                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-3 bg-green-400 rounded-t-full"></div>
+              </div>
+            </div>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+              Inch Vest
+            </h1>
+          </div>
 
-        <div className="text-left space-y-2">
-          <p>
-            <span className="font-semibold">Wallet:</span>{" "}
-            {user?.wallet?.address}
-          </p>
-          {user?.email && (
-            <p>
-              <span className="font-semibold">Email:</span> {user.email.address}
-            </p>
-          )}
+          {/* Desktop Navigation */}
+          <div className="hidden sm:flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowWalletActions(!showWalletActions)}
+              className="p-2  text-green-600 hover:text-green-800"
+            >
+              <User className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={logout}
+              className="p-2 text-red-600 hover:text-red-800"
+            >
+              <LogOut className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="sm:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="p-2"
+            >
+              <Menu className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
 
-        <button
-          onClick={handleSignMessage}
-          className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium"
-        >
-          Sign Message
-        </button>
-        <button
-  onClick={handleSendTransaction}
-  className="mt-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium"
->
-  Send 0 ETH Tx
-</button>
-
-        {signature && (
-          <div className="mt-4 text-left text-sm text-slate-600 break-all">
-            <p className="font-semibold">Signature:</p>
-            <code>{signature}</code>
-          </div>
+        {/* Mobile Menu */}
+        {showMobileMenu && (
+          <Card className="mb-4 sm:hidden bg-white shadow-sm">
+            <CardContent className="p-4">
+              <div className="flex flex-col gap-3">
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowWalletActions(!showWalletActions)}
+                  className="justify-start"
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Account Info
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={logout}
+                  className="justify-start text-red-600 hover:text-red-700"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Log Out
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
-        <button
-          onClick={logout}
-          className="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-medium"
-        >
-          Log Out
-        </button>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          {/* Left Column - Main Content */}
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+            {/* User Info Card (Collapsible) */}
+            {showWalletActions && (
+              <Card className="bg-gradient-to-b bg-green-700 bg-green-500 shadow-sm">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Wallet className="w-5 h-5 white" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium white">
+                          Wallet Address
+                        </p>
+                        <p className="text-xs sm:text-sm text-white font-mono break-all">
+                          {user?.wallet?.address}
+                        </p>
+                      </div>
+                    </div>
+                    {user?.email && (
+                      <div className="flex items-center gap-3">
+                        <User className="w-5 h-5 white" />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium white">Email</p>
+                          <p className="text-xs sm:text-sm white">
+                            {user.email.address}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                      <Button
+                        onClick={handleSignMessage}
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 text-xs sm:text-sm bg-transparent"
+                      >
+                        Sign Message
+                      </Button>
+                      <Button
+                        onClick={handleSendTransaction}
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 text-xs sm:text-sm bg-transparent"
+                      >
+                        Test Transaction
+                      </Button>
+                    </div>
+                    {signature && (
+                      <div className="mt-3 p-3 bg-gray-50 rounded text-xs sm:text-sm">
+                        <p className="font-medium text-gray-700 mb-1">
+                          Last Signature:
+                        </p>
+                        <code className="text-gray-600 break-all block">
+                          {signature.slice(0, 50)}...
+                        </code>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Total Balance Card */}
+            <Card className="bg-white shadow-sm">
+              <CardContent className="p-6 sm:p-8">
+                <div className="text-center">
+                  <p className="text-gray-600 text-sm sm:text-base mb-2">
+                    Total Balance
+                  </p>
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                    ${balance.toLocaleString()}
+                  </h2>
+                  {isReady && (
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-100 text-green-800 border-green-700"
+                    >
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      Ready to Start
+                    </Badge>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Balance Chart */}
+            <Card className="bg-white shadow-sm">
+              <CardContent className="p-4 sm:p-6">
+                <h3 className="font-semibold text-gray-900 mb-4 text-sm sm:text-base">
+                  Balance Overview
+                </h3>
+                <SimpleChart />
+              </CardContent>
+            </Card>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
+              <Button
+                variant="outline"
+                className="flex flex-col items-center gap-2 h-16 sm:w-auto bg-gradient-to-r from-green-300 to-green-200 rounded-3xl text-green-500 border-green-500 shadow-md transition hover:brightness-105"
+                onClick={handleAddFunds}
+              >
+                <Plus className="w-5 h-5 sm:w-6 sm:h-8 text-green-800" />
+                <span className="text-xs sm:text-sm">Add Funds</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="flex flex-col items-center gap-2 h-16 sm:w-auto bg-gradient-to-r from-blue-300 to-blue-200 rounded-3xl text-blue-500 border-blue-500 shadow-md transition hover:brightness-105"
+                onClick={handleSendMoney}
+              >
+                <Send className="w-5 h-5 sm:w-6 sm:h-8 text-blue-800" />
+                <span className="text-xs sm:text-sm">Send Money</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="flex flex-col items-center gap-2 h-16 sm:w-auto bg-gradient-to-r from-purple-300 to-purple-200 rounded-3xl text-purple-500 border-purple-500 shadow-md transition hover:brightness-105"
+                onClick={handleWithdraw}
+              >
+                <ArrowDownToLine className="w-5 h-5 sm:w-6 sm:h-8 text-purple-800" />
+                <span className="text-xs sm:text-sm">Withdraw</span>
+              </Button>
+            </div>
+          </div>
+
+          {/* Right Column - Sidebar Content */}
+          <div className="space-y-4 sm:space-y-6">
+            {/* Recent Activity */}
+            <Card className="from-orange-400 to-green-500 text-white shadow-sm">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
+                    Recent Activity
+                  </h3>
+                  <Plus className="w-4 h-4 text-gray-400" />
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Plus className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 text-sm sm:text-base">
+                        Deposit
+                      </p>
+                      <p className="text-xs sm:text-sm text-gray-500">
+                        Today 2:30 PM
+                      </p>
+                    </div>
+                    <p className="font-semibold text-green-600 text-sm sm:text-base">
+                      +$2,000
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Your Progress */}
+            <Card className="bg-white shadow-sm">
+              <CardContent className="p-4 sm:p-6">
+                <h3 className="font-semibold text-gray-900 mb-4 text-sm sm:text-base">
+                  Your Progress
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      <span className="text-gray-700 text-sm sm:text-base">
+                        Account Status
+                      </span>
+                    </div>
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-100 text-green-800"
+                    >
+                      {authenticated ? "Verified" : "Pending"}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-orange-500" />
+                      <span className="text-gray-700 text-sm sm:text-base">
+                        Investment Status
+                      </span>
+                    </div>
+                    <Badge
+                      variant="secondary"
+                      className="bg-orange-100 text-orange-800"
+                    >
+                      Inactive
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-blue-500" />
+                      <span className="text-gray-700 text-sm sm:text-base">
+                        Security Level
+                      </span>
+                    </div>
+                    <Badge
+                      variant="secondary"
+                      className="bg-blue-100 text-blue-800"
+                    >
+                      {client ? "High" : "Medium"}
+                    </Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* AI Investment CTA */}
+            <Card className="bg-gradient-to-r from-orange-400 to-green-500 text-white shadow-lg">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg sm:text-xl mb-2">
+                      Start AI Investment
+                    </h3>
+                    <p className="text-white/90 text-sm sm:text-base mb-4">
+                      Let our AI optimize your returns automatically
+                    </p>
+                    <Button
+                      className="bg-gradient-to-r from-orange-300 to-green-400 text-gray-900 hover:brightness-105 font-semibold w-full sm:w-auto rounded-full px-6 py-2 shadow-md transition"
+                      size="sm"
+                      onClick={handleStartInvesting}
+                    >
+                      Start Investing
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Bottom Spacing */}
+        <div className="h-8 sm:h-12"></div>
       </div>
     </div>
   );
