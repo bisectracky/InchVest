@@ -483,6 +483,37 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* AI Investment CTA */}
+            <Card className="bg-gradient-to-br from-green-600 via-grey to-blue-500 text-white shadow-2xl rounded-3xl overflow-hidden">
+              <CardContent className="p-6 sm:p-8">
+                <div className="flex items-start gap-5">
+                  {/* Icon Circle */}
+                  <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-inner">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+
+                  {/* Text and Button */}
+                  <div className="flex-1">
+                    <h3 className="font-extrabold text-xl sm:text-2xl mb-1 drop-shadow-sm">
+                      Start AI Investment
+                    </h3>
+                    <p className="text-white/90 text-sm sm:text-base mb-5 leading-relaxed">
+                      Let our AI optimize your returns automatically.
+                    </p>
+
+                    <Button
+                      className="bg-gradient-to-r from-green-600 via-orange-200 to-blue-500 text-gray-900 font-semibold px-6 py-2 rounded-full shadow-md hover:brightness-110 hover:scale-105 transition-all duration-300"
+                      size="sm"
+                      onClick={handleStartInvesting}
+                    >
+                      Start Investing
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Your Progress */}
             <Card className="bg-gradient-to-br from-white via-blue-50 to-purple-50 shadow-lg border-0 overflow-hidden relative">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5" />
@@ -529,35 +560,6 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            {/* AI Investment CTA */}
-            <Card className="bg-gradient-to-br from-green-600 via-grey to-blue-500 text-white shadow-2xl rounded-3xl overflow-hidden">
-              <CardContent className="p-6 sm:p-8">
-                <div className="flex items-start gap-5">
-                  {/* Icon Circle */}
-                  <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-inner">
-                    <Sparkles className="w-6 h-6 text-white" />
-                  </div>
-
-                  {/* Text and Button */}
-                  <div className="flex-1">
-                    <h3 className="font-extrabold text-xl sm:text-2xl mb-1 drop-shadow-sm">
-                      Start AI Investment
-                    </h3>
-                    <p className="text-white/90 text-sm sm:text-base mb-5 leading-relaxed">
-                      Let our AI optimize your returns automatically.
-                    </p>
-
-                    <Button
-                      className="bg-gradient-to-r from-green-600 via-orange-200 to-blue-500 text-gray-900 font-semibold px-6 py-2 rounded-full shadow-md hover:brightness-110 hover:scale-105 transition-all duration-300"
-                      size="sm"
-                      onClick={handleStartInvesting}
-                    >
-                      Start Investing
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
 
