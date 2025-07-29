@@ -22,8 +22,11 @@ import {
   LogOut,
   Wallet,
   Menu,
+  TrendingUp,
+  Activity,
 } from "lucide-react";
-// Simple Badge component
+
+// Enhanced Badge component with gradients
 const Badge = ({
   children,
   className = "",
@@ -31,32 +34,42 @@ const Badge = ({
 }: {
   children: React.ReactNode;
   className?: string;
-  variant?: "default" | "secondary";
+  variant?: "default" | "secondary" | "success" | "warning" | "info";
 }) => {
   const baseClasses =
-    "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold";
-  const variantClasses =
-    variant === "secondary"
-      ? "border-transparent bg-gray-100 text-gray-800"
-      : "border-transparent bg-blue-100 text-blue-800";
+    "inline-flex items-center rounded-full border-0 px-3 py-1 text-xs font-semibold shadow-sm";
+
+  const variantClasses = {
+    default: "bg-gradient-to-r from-blue-500 to-blue-400 text-white",
+    secondary: "bg-gradient-to-r from-gray-200 to-gray-100 text-gray-800",
+    success: "bg-gradient-to-r from-teal-500 to-emerald-400 text-white",
+    warning: "bg-gradient-to-r from-orange-500 to-yellow-400 text-white",
+    info: "bg-gradient-to-r from-blue-500 to-cyan-400 text-white",
+  };
 
   return (
-    <div className={`${baseClasses} ${variantClasses} ${className}`}>
+    <div className={`${baseClasses} ${variantClasses[variant]} ${className}`}>
       {children}
     </div>
   );
 };
 
-// Responsive chart component
+// Enhanced chart component with gradients
 const SimpleChart = () => (
-  <div className="h-32 sm:h-40 flex items-end justify-between px-2 sm:px-4">
-    {[20, 60, 75, 70, 35].map((height, i) => (
+  <div className="h-32 sm:h-40 flex items-end justify-between px-2 sm:px-4 relative">
+    {/* Background gradient */}
+    <div className="absolute inset-0 bg-gradient-to-t from-teal-50 to-transparent rounded-lg opacity-50" />
+
+    {[40, 60, 45, 70, 85].map((height, i) => (
       <div
         key={i}
-        className="bg-gradient-to-b bg-green-700 bg-green-600  w-6 sm:w-8 md:w-10 rounded-t transition-all duration-300"
+        className="relative z-10 bg-gradient-to-t from-teal-600 via-teal-500 to-teal-400 w-6 sm:w-8 md:w-10 rounded-t-lg shadow-sm transition-all duration-300 hover:shadow-md"
         style={{ height: `${height}%` }}
       />
     ))}
+
+    {/* Overlay glow effect */}
+    <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/20 rounded-lg pointer-events-none" />
   </div>
 );
 
@@ -118,9 +131,9 @@ export default function Dashboard() {
 
   if (!ready) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 relative">
+          <div className="w-16 h-16 mx-auto mb-4 relative animate-pulse">
             <Image
               src="/images/inchvest-logo.png"
               alt="InchVest Logo"
@@ -138,7 +151,7 @@ export default function Dashboard() {
   if (!authenticated) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Container with responsive max-width */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -182,13 +195,11 @@ export default function Dashboard() {
               <LogOut className="w-4 h-4" />
             </Button>
             <Card className="bg-gradient-to-br from-green-600 via-grey to-blue-500 text-white shadow-2xl rounded-3xl overflow-hidden">
-              <Link href="/" passHref>
-                <Button
-                  className="bg-white/20 text-white border border-white/30 font-medium px-6 py-2 rounded-full hover:bg-white/30 hover:text-white transition-all duration-300"
-                  size="sm"
-                >
-                  Back to Home
-                </Button>
+              <Link
+                href="/"
+                className="bg-white/20 text-white border border-white/30 font-medium px-6 py-2 rounded-full hover:bg-white/30 hover:text-white transition-all duration-300 inline-block text-center"
+              >
+                Back to Home
               </Link>
             </Card>
           </div>
@@ -208,13 +219,13 @@ export default function Dashboard() {
 
         {/* Mobile Menu */}
         {showMobileMenu && (
-          <Card className="mb-4 sm:hidden bg-white shadow-sm">
+          <Card className="mb-4 sm:hidden bg-gradient-to-r from-white to-gray-50 shadow-lg border-0">
             <CardContent className="p-4">
               <div className="flex flex-col gap-3">
                 <Button
                   variant="ghost"
                   onClick={() => setShowWalletActions(!showWalletActions)}
-                  className="justify-start"
+                  className="justify-start hover:bg-white/50"
                 >
                   <User className="w-4 h-4 mr-2" />
                   Account Info
@@ -222,7 +233,7 @@ export default function Dashboard() {
                 <Button
                   variant="ghost"
                   onClick={logout}
-                  className="justify-start text-red-600 hover:text-red-700"
+                  className="justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   Log Out
@@ -238,26 +249,33 @@ export default function Dashboard() {
           <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* User Info Card (Collapsible) */}
             {showWalletActions && (
-              <Card className="bg-gradient-to-b bg-green-700 bg-green-500 shadow-sm">
-                <CardContent className="p-4 sm:p-6">
+              <Card className="bg-gradient-to-br bg-purple-700 via-grey to-green-700 shadow-lg border-0 overflow-hidden relativem">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5" />
+                <CardContent className="p-4 sm:p-6 relative z-10">
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <Wallet className="w-5 h-5 white" />
+                      <div className="p-2 bg-gradient-to-br from-blue-800 to-blue-400 rounded-full">
+                        <Wallet className="w-5 h-5 white" />
+                      </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium white">
+                        <p className="text-sm font-medium text-gray-900">
                           Wallet Address
                         </p>
-                        <p className="text-xs sm:text-sm text-white font-mono break-all">
+                        <p className="text-xs sm:text-sm text-gray-500 font-mono break-all">
                           {user?.wallet?.address}
                         </p>
                       </div>
                     </div>
                     {user?.email && (
                       <div className="flex items-center gap-3">
-                        <User className="w-5 h-5 white" />
+                        <div className="p-2 bg-gradient-to-br from-purple-800 to-purple-400 rounded-full">
+                          <User className="w-5 h-5 white" />
+                        </div>
                         <div className="flex-1">
-                          <p className="text-sm font-medium white">Email</p>
-                          <p className="text-xs sm:text-sm white">
+                          <p className="text-sm font-medium text-gray-900">
+                            Email
+                          </p>
+                          <p className="text-xs sm:text-sm text-gray-500">
                             {user.email.address}
                           </p>
                         </div>
@@ -268,7 +286,7 @@ export default function Dashboard() {
                         onClick={handleSignMessage}
                         variant="outline"
                         size="sm"
-                        className="flex-1 text-xs sm:text-sm bg-transparent"
+                        className="rounded-full flex-1 text-xs sm:text-sm bg-gradient-to-r from-blue-900 to-blue-400 hover:from-blue-600 hover:to-blue-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                       >
                         Sign Message
                       </Button>
@@ -276,17 +294,17 @@ export default function Dashboard() {
                         onClick={handleSendTransaction}
                         variant="outline"
                         size="sm"
-                        className="flex-1 text-xs sm:text-sm bg-transparent"
+                        className="rounded-full flex-1 text-xs sm:text-sm bg-gradient-to-r from-purple-900 to-purple-400 hover:from-purple-600 hover:to-purple-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                       >
                         Test Transaction
                       </Button>
                     </div>
                     {signature && (
-                      <div className="mt-3 p-3 bg-gray-50 rounded text-xs sm:text-sm">
+                      <div className="mt-3 p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border border-gray-200">
                         <p className="font-medium text-gray-700 mb-1">
                           Last Signature:
                         </p>
-                        <code className="text-gray-600 break-all block">
+                        <code className="text-gray-600 break-all block text-xs">
                           {signature.slice(0, 50)}...
                         </code>
                       </div>
@@ -297,19 +315,27 @@ export default function Dashboard() {
             )}
 
             {/* Total Balance Card */}
-            <Card className="bg-white shadow-sm">
-              <CardContent className="p-6 sm:p-8">
+            <Card className="bg-gradient-to-br from-teal-500 via-teal-400 to-emerald-400 text-white shadow-xl border-0 overflow-hidden relative">
+              {/* Background pattern */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12" />
+
+              <CardContent className="p-6 sm:p-8 relative z-10">
                 <div className="text-center">
-                  <p className="text-gray-600 text-sm sm:text-base mb-2">
-                    Total Balance
-                  </p>
-                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <TrendingUp className="w-5 h-5 text-white/80" />
+                    <p className="text-white/90 text-sm sm:text-base">
+                      Total Balance
+                    </p>
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 drop-shadow-sm">
                     ${balance.toLocaleString()}
                   </h2>
                   {isReady && (
                     <Badge
-                      variant="secondary"
-                      className="bg-green-100 text-green-800 border-green-700"
+                      variant="success"
+                      className="bg-white/20 text-white border border-white/30 backdrop-blur-sm"
                     >
                       <CheckCircle className="w-3 h-3 mr-1" />
                       Ready to Start
@@ -320,11 +346,17 @@ export default function Dashboard() {
             </Card>
 
             {/* Balance Chart */}
-            <Card className="bg-white shadow-sm">
-              <CardContent className="p-4 sm:p-6">
-                <h3 className="font-semibold text-gray-900 mb-4 text-sm sm:text-base">
-                  Balance Overview
-                </h3>
+            <Card className="bg-gradient-to-br from-white via-gray-50 to-teal-50 shadow-lg border-0 overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent" />
+              <CardContent className="p-4 sm:p-6 relative z-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="p-2 bg-gradient-to-br from-teal-500 to-teal-400 rounded-full">
+                    <Activity className="w-4 h-4 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
+                    Balance Overview
+                  </h3>
+                </div>
                 <SimpleChart />
               </CardContent>
             </Card>
@@ -402,8 +434,9 @@ export default function Dashboard() {
           {/* Right Column - Sidebar Content */}
           <div className="space-y-4 sm:space-y-6">
             {/* Recent Activity */}
-            <Card className="from-orange-400 to-green-500 text-white shadow-sm">
-              <CardContent className="p-4 sm:p-6">
+            <Card className="bg-gradient-to-br from-white via-orange-50 to-yellow-50 shadow-lg border-0 overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent" />
+              <CardContent className="p-4 sm:p-6 relative z-10">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
                     Recent Activity
@@ -446,55 +479,47 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
-
             {/* Your Progress */}
-            <Card className="bg-white shadow-sm">
-              <CardContent className="p-4 sm:p-6">
-                <h3 className="font-semibold text-gray-900 mb-4 text-sm sm:text-base">
-                  Your Progress
-                </h3>
+            <Card className="bg-gradient-to-br from-white via-blue-50 to-purple-50 shadow-lg border-0 overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5" />
+              <CardContent className="p-4 sm:p-6 relative z-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full">
+                    <Shield className="w-4 h-4 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
+                    Your Progress
+                  </h3>
+                </div>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg backdrop-blur-sm">
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      <CheckCircle className="w-4 h-4 text-teal-500" />
                       <span className="text-gray-700 text-sm sm:text-base">
                         Account Status
                       </span>
                     </div>
-                    <Badge
-                      variant="secondary"
-                      className="bg-green-100 text-green-800"
-                    >
+                    <Badge variant="success">
                       {authenticated ? "Verified" : "Pending"}
                     </Badge>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg backdrop-blur-sm">
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-orange-500" />
                       <span className="text-gray-700 text-sm sm:text-base">
                         Investment Status
                       </span>
                     </div>
-                    <Badge
-                      variant="secondary"
-                      className="bg-orange-100 text-orange-800"
-                    >
-                      Inactive
-                    </Badge>
+                    <Badge variant="warning">Inactive</Badge>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-lg backdrop-blur-sm">
                     <div className="flex items-center gap-2">
                       <Shield className="w-4 h-4 text-blue-500" />
                       <span className="text-gray-700 text-sm sm:text-base">
                         Security Level
                       </span>
                     </div>
-                    <Badge
-                      variant="secondary"
-                      className="bg-blue-100 text-blue-800"
-                    >
-                      {client ? "High" : "Medium"}
-                    </Badge>
+                    <Badge variant="info">{client ? "High" : "Medium"}</Badge>
                   </div>
                 </div>
               </CardContent>
