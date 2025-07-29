@@ -154,7 +154,7 @@ export default function Dashboard() {
               />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-orange-500 to-orange-400 bg-clip-text text-transparent">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-500 to-green-700 bg-clip-text text-transparent">
                 InchVest
               </h1>
               <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">

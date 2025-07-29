@@ -153,7 +153,7 @@ export default function Home() {
               <div>
                 <Badge
                   variant="outline"
-                  className="bg-blue-50 text-blue-700 border-blue-200 font-medium px-3 py-1 mb-4"
+                  className="bg-green-800 text-blue-700 border-green-100 font-medium px-3 py-1 mb-4"
                 >
                   Professional Grade
                 </Badge>
