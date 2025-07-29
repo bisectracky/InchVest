@@ -399,6 +399,22 @@ export default function Dashboard() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Minus className="w-5 h-5 text-green-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 text-sm sm:text-base">
+                        Withdraw
+                      </p>
+                      <p className="text-xs sm:text-sm text-gray-500">
+                        Today 2:30 PM
+                      </p>
+                    </div>
+                    <p className="font-semibold text-red-400 text-sm sm:text-base">
+                      -$12.60
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
                       <Plus className="w-5 h-5 text-green-600" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -410,7 +426,7 @@ export default function Dashboard() {
                       </p>
                     </div>
                     <p className="font-semibold text-green-600 text-sm sm:text-base">
-                      +$2,000
+                      +$2,512.60
                     </p>
                   </div>
                 </div>
