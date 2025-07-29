@@ -11,6 +11,7 @@
   "dependencies": {
     "@privy-io/react-auth": "^2.20.0",
     "class-variance-authority": "^0.7.1",
+    "dotenv": "^17.2.1",
     "lucide-react": "^0.528.0",
     "next": "15.4.4",
     "permissionless": "^0.2.52",
