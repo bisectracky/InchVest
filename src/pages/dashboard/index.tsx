@@ -438,7 +438,7 @@ export default function Dashboard() {
           {/* Right Column - Sidebar Content */}
           <div className="space-y-4 sm:space-y-6">
             {/* Recent Activity */}
-            <Card className="bg-gradient-to-br from-white via-orange-50 to-yellow-50 shadow-lg border-0 overflow-hidden relative">
+            <Card className="bg-gradient-to-br from-green-300 via-white to-green-200 shadow-lg border-0 overflow-hidden relative">
               <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent" />
               <CardContent className="p-4 sm:p-6 relative z-10">
                 <div className="flex items-center justify-between mb-4">
@@ -559,7 +559,6 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
-
           </div>
         </div>
 
