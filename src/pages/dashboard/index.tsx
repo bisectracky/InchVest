@@ -249,7 +249,7 @@ export default function Dashboard() {
           <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* User Info Card (Collapsible) */}
             {showWalletActions && (
-              <Card className="bg-gradient-to-br bg-purple-700 via-grey to-green-700 shadow-lg border-0 overflow-hidden relativem">
+              <Card className="bg-gradient-to-br bg-white to-grey shadow-lg border-0 overflow-hidden relativem">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5" />
                 <CardContent className="p-4 sm:p-6 relative z-10">
                   <div className="space-y-4">
