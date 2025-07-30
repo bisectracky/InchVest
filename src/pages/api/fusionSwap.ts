@@ -50,29 +50,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
 
-    // Approving, its not working correctly
-    const spender = "0x111111125421ca6dc452d289314280a0f8842a65"; // 1inch Fusion router
-const wethAddress = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"; // WETH on Arbitrum
+//     // Approving, its not working correctly
+//     const spender = "0x111111125421ca6dc452d289314280a0f8842a65"; // 1inch Fusion router
+// const wethAddress = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"; // WETH on Arbitrum
 
-const wethContract = new web3.eth.Contract(ERC20_ABI, wethAddress);
-// Check current allowance
-const currentAllowance = await wethContract.methods
-  .allowance(walletAddress, spender)
-  .call();
+// const wethContract = new web3.eth.Contract(ERC20_ABI, wethAddress);
+// // Check current allowance
+// const currentAllowance = await wethContract.methods
+//   .allowance(walletAddress, spender)
+//   .call();
 
-const amountToSwap = web3.utils.toWei("0.006", "ether"); // your swap amount
+// const amountToSwap = web3.utils.toWei("0.006", "ether"); // your swap amount
 
-if (BigInt(currentAllowance) < BigInt(amountToSwap)) {
-  console.log("🔑 Approving WETH...");
-  await wethContract.methods
-    .approve(spender, web3.utils.toWei("1", "ether")) // Approve 1 WETH
-    .send({ from: walletAddress });
-}
+// if (BigInt(currentAllowance) < BigInt(amountToSwap)) {
+//   console.log("🔑 Approving WETH...");
+//   await wethContract.methods
+//     .approve(spender, web3.utils.toWei("1", "ether")) // Approve 1 WETH
+//     .send({ from: walletAddress });
+// }
 
     // Helper: Get fresh quote
     const getQuote = async () => {
       return await sdk.getQuote({
-        amount: "6500000000000000", // 0.01 ETH
+        amount: "5500000000000000", // 0.01 ETH
         srcChainId: NetworkEnum.ARBITRUM,
         dstChainId: NetworkEnum.ETHEREUM,
         enableEstimate: true,
