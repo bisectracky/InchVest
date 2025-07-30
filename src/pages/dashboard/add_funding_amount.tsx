@@ -73,7 +73,7 @@ export default function AddFundsAmountPage() {
     if (amount && amount > 0) {
       console.log("Continue with amount:", amount);
       // Navigate to next step
-      // router.push("/add-funds/confirm")
+      router.push("/dashboard/add_funding_success");
     }
   };
 
