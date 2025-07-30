@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             authKey: process.env.DEV_PORTAL_API_KEY,
             blockchainProvider,
         });
-        const status = await sdk.getOrderStatus("0xea389d99838c442c773701dd1df27789508379d9974ee5803e1a77d25249559d");
+        const status = await sdk.getOrderStatus("0x822fd542e0282e712ca6170a19308b7f78a3a6266b859cd04393b1cc35b53947");
 
         res.status(200).json(status);
     } catch (error) {

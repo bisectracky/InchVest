@@ -74,41 +74,63 @@ const SimpleChart = () => (
 );
 
 export default function Dashboard() {
+  const { user, authenticated, ready, login, logout } = usePrivy();
+  useEffect(() => {
+    if (ready && !authenticated) {
+      login();
+    }
+  }, [ready, authenticated]);
+
   const [balance] = useState(2000);
   const [isReady] = useState(true);
   const [signature, setSignature] = useState<string | null>(null);
   const [showWalletActions, setShowWalletActions] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [user] = useState({
-    wallet: { address: "0x1234...5678" },
-    email: { address: "user@example.com" },
-  });
-  const [authenticated] = useState(true);
-  const [ready] = useState(true);
-  const [client] = useState(true);
+  // const [user] = useState({
+  //   wallet: { address: "0x1234...5678" },
+  //   email: { address: "user@example.com" },
+  // });
+  // const [authenticated] = useState(true);
+  // const [ready] = useState(true);
   const router = useRouter();
 
+  const { client } = useSmartWallets();
+
   const handleSignMessage = async () => {
+    if (!client) {
+      console.warn("Smart wallet client not ready");
+      return;
+    }
     try {
       const message = "Hello from Privy + Pimlico!";
-      const mockSig = "0x" + Math.random().toString(16).substring(2, 66);
-      setSignature(mockSig);
-      console.log("Signature:", mockSig);
+      const sig = await client.signMessage({
+        message,
+      });
+      setSignature(sig);
+      console.log("Signature:", sig);
     } catch (err) {
       console.error("Signing failed:", err);
     }
   };
 
   const handleSendTransaction = async () => {
-    try {
-      const userOpHash = "0x" + Math.random().toString(16).substring(2, 66);
-      console.log("UserOp sent:", userOpHash);
-      alert(`Transaction sent!\nUserOp Hash:\n${userOpHash}`);
-    } catch (err) {
-      console.error("Transaction failed:", err);
-      alert("Transaction failed. See console.");
-    }
-  };
+  if (!client) {
+    console.warn("Smart wallet client not ready");
+    return;
+  }
+  if (!authenticated) return null; // Hide content during login
+  try {
+const userOpHash = await client.sendTransaction({
+  to: "0x000000000000000000000000000000000000dead",
+  value: BigInt(0),
+});
+console.log("UserOp sent:", userOpHash);
+alert(`Transaction sent!\nUserOp Hash:\n${userOpHash}`);
+  } catch (err) {
+    console.error("Transaction failed:", err);
+    alert("Transaction failed. See console.");
+  }
+};
 
   const handleAddFunds = () => {
     console.log("Add funds clicked");
@@ -129,9 +151,9 @@ export default function Dashboard() {
     router.push("/dashboard/investment"); // replace with your path
   };
 
-  const logout = () => {
-    console.log("Logout clicked");
-  };
+  // const logout = () => {
+  //   console.log("Logout clicked");
+  // };
 
   if (!ready) {
     return (
@@ -152,7 +174,32 @@ export default function Dashboard() {
     );
   }
 
-  if (!authenticated) return null;
+  if (!authenticated) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-white to-slate-100 text-slate-800">
+        <div className="bg-white p-8 rounded-xl shadow-xl max-w-lg w-full text-center space-y-6">
+          <h1 className="text-3xl font-bold">Welcome to Your Dashboard</h1>
+          <div className="text-left space-y-2">
+            <p>
+              <span className="font-semibold">Wallet:</span>{" "}
+              {user?.wallet?.address}
+            </p>
+            {user?.email && (
+              <p>
+                <span className="font-semibold">Email:</span> {user.email.address}
+              </p>
+            )}
+          </div>
+          <button
+            onClick={logout}
+            className="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-medium"
+          >
+            Log Out
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">

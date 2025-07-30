@@ -10,28 +10,6 @@ import {
 import Web3 from "web3";
 import { randomBytes } from "crypto";
 
-const ERC20_ABI = [
-  {
-    constant: true,
-    inputs: [
-      { name: "_owner", type: "address" },
-      { name: "_spender", type: "address" }
-    ],
-    name: "allowance",
-    outputs: [{ name: "remaining", type: "uint256" }],
-    type: "function"
-  },
-  {
-    constant: false,
-    inputs: [
-      { name: "_spender", type: "address" },
-      { name: "_value", type: "uint256" }
-    ],
-    name: "approve",
-    outputs: [{ name: "", type: "bool" }],
-    type: "function"
-  }
-];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -50,25 +28,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
 
-//     // Approving, its not working correctly
-//     const spender = "0x111111125421ca6dc452d289314280a0f8842a65"; // 1inch Fusion router
-// const wethAddress = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"; // WETH on Arbitrum
-
-// const wethContract = new web3.eth.Contract(ERC20_ABI, wethAddress);
-// // Check current allowance
-// const currentAllowance = await wethContract.methods
-//   .allowance(walletAddress, spender)
-//   .call();
-
-// const amountToSwap = web3.utils.toWei("0.006", "ether"); // your swap amount
-
-// if (BigInt(currentAllowance) < BigInt(amountToSwap)) {
-//   console.log("🔑 Approving WETH...");
-//   await wethContract.methods
-//     .approve(spender, web3.utils.toWei("1", "ether")) // Approve 1 WETH
-//     .send({ from: walletAddress });
-// }
-
     // Helper: Get fresh quote
     const getQuote = async () => {
       return await sdk.getQuote({
@@ -82,59 +41,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     };
 
-    const attemptSwap = async () => {
-      const quote = await getQuote();
-      const preset = PresetEnum.fast;
+const attemptSwap = async () => {
+  const quote = await getQuote();
+  const preset = PresetEnum.fast;
 
-      console.log("DEBUG: Got Quote", {
-        quoteId: quote.quoteId,
-      });
+  console.log("DEBUG: Got Quote", { quoteId: quote.quoteId });
 
-      // Generate secrets
-      const secrets = Array.from({ length: quote.presets[preset].secretsCount }).map(
-        () => "0x" + randomBytes(32).toString("hex")
-      );
-      const secretHashes = secrets.map((s) => HashLock.hashSecret(s));
-      const hashLock =
-        secrets.length === 1
-          ? HashLock.forSingleFill(secrets[0])
-          : HashLock.forMultipleFills(HashLock.getMerkleLeaves(secrets));
+  // Generate secrets
+  const secrets = Array.from({ length: quote.presets[preset].secretsCount }).map(
+    () => "0x" + randomBytes(32).toString("hex")
+  );
+  const secretHashes = secrets.map((s) => HashLock.hashSecret(s));
+  const hashLock =
+    secrets.length === 1
+      ? HashLock.forSingleFill(secrets[0])
+      : HashLock.forMultipleFills(HashLock.getMerkleLeaves(secrets));
 
-      // Create order
-      const { hash, quoteId, order } = await sdk.createOrder(quote, {
-        walletAddress,
-        hashLock,
-        preset,
-        source,
-        secretHashes,
-      });
+  try {
+    // 🔥 Replace createOrder+submitOrder with placeOrder
+    const { orderHash } = await sdk.placeOrder(quote, {
+      walletAddress,
+      hashLock,
+      secretHashes
+    });
 
-      console.log("✅ Order Created:", hash);
+    console.log("✅ Order Placed:", orderHash);
+    return { success: true, hash: orderHash };
 
-      console.log("DEBUG submitOrder params:", {
-        srcChainId: quote.srcChainId,
-        order,
-        quoteId,
-        secretHashesCount: secretHashes.length,
-      });
-
-      try {
-        const _orderInfo = await sdk.submitOrder(
-          quote.srcChainId,
-          order,
-          quoteId,
-          secretHashes
-        );
-        console.log("✅ Order Submitted:", _orderInfo);
-        return { success: true, hash };
-      } catch (err: any) {
-        console.error("❌ submitOrder failed:", {
-          message: err.message,
-          responseData: err.response?.data,
-        });
-        return { success: false, error: err };
-      }
-    };
+  } catch (err: any) {
+    console.error("❌ placeOrder failed:", {
+      message: err.message,
+      responseData: err.response?.data,
+    });
+    return { success: false, error: err };
+  }
+};
 
     // First attempt
     let result = await attemptSwap();
