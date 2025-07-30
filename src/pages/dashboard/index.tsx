@@ -121,6 +121,7 @@ export default function Dashboard() {
 
   const handleWithdraw = () => {
     console.log("Withdraw clicked");
+    router.push("/dashboard/withdraw_funding");
   };
 
   const handleStartInvesting = () => {
