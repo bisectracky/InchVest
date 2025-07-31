@@ -16,7 +16,7 @@ const artifact = require("../build/contracts/HTLC.json");
 async function main() {
   // 1️⃣ Read + validate your env
   const fullHost   = "https://api.shasta.trongrid.io";
-  const privateKey = "b770847f6934a854c6b67f952ef6837ffb8f8f6ce952bcc3acac57f625b6e618";
+  const privateKey = "";
   const base58Beneficiary = "TXWeYg6uEiptmiT5owQJhqNrazPzHbAtMA";
   const secret            = "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890";
 
