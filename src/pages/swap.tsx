@@ -125,26 +125,6 @@ export default function SwapPage() {
       >
         {loading ? "⏳ Checking..." : "🔍 Check Order Status"}
       </button>
-
-      {/* ✅ Deploy Tron Contract Button */}
-      <button
-        onClick={deployTronContract}
-        disabled={loading}
-        style={{
-          padding: "12px 20px",
-          backgroundColor: loading ? "#aaa" : "#FF5722",
-          color: "#fff",
-          fontSize: "16px",
-          border: "none",
-          borderRadius: "8px",
-          cursor: loading ? "not-allowed" : "pointer",
-          marginTop: "10px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-        }}
-      >
-        {loading ? "⏳ Deploying..." : "🚀 Deploy Tron Escrow Contract"}
-      </button>
-
       {/* Results */}
       <div style={{ marginTop: 20, fontWeight: "bold", color: "#333" }}>
         {result}
