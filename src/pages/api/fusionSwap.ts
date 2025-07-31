@@ -1,4 +1,5 @@
 // pages/api/fusionSwap.ts
+
 import type { NextApiRequest, NextApiResponse } from "next";
 import {
   HashLock,
@@ -9,7 +10,6 @@ import {
 } from "@1inch/cross-chain-sdk";
 import Web3 from "web3";
 import { randomBytes } from "crypto";
-
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -27,11 +27,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       blockchainProvider: new PrivateKeyProviderConnector(privateKey, web3),
     });
 
-
     // Helper: Get fresh quote
     const getQuote = async () => {
       return await sdk.getQuote({
-        amount: "5500000000000000", // 0.01 ETH
+        amount: "5500000000000000", // 0.0055 ETH
         srcChainId: NetworkEnum.ARBITRUM,
         dstChainId: NetworkEnum.ETHEREUM,
         enableEstimate: true,
@@ -41,41 +40,76 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     };
 
-const attemptSwap = async () => {
-  const quote = await getQuote();
-  const preset = PresetEnum.fast;
+    // Attempt a swap
+    const attemptSwap = async () => {
+      const quote = await getQuote();
+      const preset = PresetEnum.fast;
 
-  console.log("DEBUG: Got Quote", { quoteId: quote.quoteId });
+      console.log("DEBUG: Got Quote", { quoteId: quote.quoteId });
 
-  // Generate secrets
-  const secrets = Array.from({ length: quote.presets[preset].secretsCount }).map(
-    () => "0x" + randomBytes(32).toString("hex")
-  );
-  const secretHashes = secrets.map((s) => HashLock.hashSecret(s));
-  const hashLock =
-    secrets.length === 1
-      ? HashLock.forSingleFill(secrets[0])
-      : HashLock.forMultipleFills(HashLock.getMerkleLeaves(secrets));
+      // Generate secrets
+      const secrets = Array.from({ length: quote.presets[preset].secretsCount }).map(
+        () => "0x" + randomBytes(32).toString("hex")
+      );
+      const secretHashes = secrets.map((s) => HashLock.hashSecret(s));
+      const hashLock =
+        secrets.length === 1
+          ? HashLock.forSingleFill(secrets[0])
+          : HashLock.forMultipleFills(HashLock.getMerkleLeaves(secrets));
 
-  try {
-    // 🔥 Replace createOrder+submitOrder with placeOrder
-    const { orderHash } = await sdk.placeOrder(quote, {
-      walletAddress,
-      hashLock,
-      secretHashes
-    });
+      try {
+        // Place order
+        const { orderHash } = await sdk.placeOrder(quote, {
+          walletAddress,
+          hashLock,
+          secretHashes,
+          preset,
+          source,
+        });
 
-    console.log("✅ Order Placed:", orderHash);
-    return { success: true, hash: orderHash };
+        console.log("✅ Order Placed:", orderHash);
 
-  } catch (err: any) {
-    console.error("❌ placeOrder failed:", {
-      message: err.message,
-      responseData: err.response?.data,
-    });
-    return { success: false, error: err };
-  }
-};
+        // -------------------------
+        // 🔥 NEW LOGIC: Poll for fills and submit secrets
+        // -------------------------
+        const intervalId = setInterval(async () => {
+          try {
+            console.log("🔄 Checking order status...");
+            const order = await sdk.getOrderStatus(orderHash);
+
+            if (order.status === "executed") {
+              console.log("✅ Order executed successfully!");
+              clearInterval(intervalId);
+              return;
+            }
+
+            const fillsObject = await sdk.getReadyToAcceptSecretFills(orderHash);
+
+            if (fillsObject.fills.length > 0) {
+              for (const fill of fillsObject.fills) {
+                try {
+                  await sdk.submitSecret(orderHash, secrets[fill.idx]);
+                  console.log(`🔑 Secret submitted for fill index ${fill.idx}`);
+                } catch (error: any) {
+                  console.error(`❌ Error submitting secret: ${error.message}`);
+                }
+              }
+            }
+          } catch (error: any) {
+            console.error("⚠️ Polling error:", error.message);
+          }
+        }, 5000); // every 5 seconds
+
+        return { success: true, hash: orderHash };
+
+      } catch (err: any) {
+        console.error("❌ placeOrder failed:", {
+          message: err.message,
+          responseData: err.response?.data,
+        });
+        return { success: false, error: err };
+      }
+    };
 
     // First attempt
     let result = await attemptSwap();
@@ -93,11 +127,11 @@ const attemptSwap = async () => {
     return res.status(200).json({ orderHash: result.hash });
 
   } catch (err: any) {
-console.error("❌ submitOrder failed:", {
-  message: err.message,
-  responseData: err.response?.data,
-  meta: JSON.stringify(err.response?.data?.meta, null, 2),
-});
+    console.error("❌ submitOrder failed:", {
+      message: err.message,
+      responseData: err.response?.data,
+      meta: JSON.stringify(err.response?.data?.meta, null, 2),
+    });
     return res.status(500).json({ error: err.message, details: err.response?.data });
   }
 }
