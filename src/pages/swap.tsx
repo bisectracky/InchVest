@@ -49,6 +49,25 @@ export default function SwapPage() {
     }
   };
 
+  // ✅ NEW: Deploy Tron Escrow Contract
+  const deployTronContract = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/deployTron', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await response.json();
+      console.log(data)
+      setResult(`✅ Contract deployed at: ${data.contractAddress || "unknown"}`);
+    } catch (err) {
+      console.error("Deployment error:", err);
+      setResult("❌ Failed to deploy Tron contract");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div style={{ padding: 40, fontFamily: "Arial, sans-serif" }}>
       <h1 style={{ marginBottom: 20 }}>💱 Token Swap Testing</h1>
@@ -66,8 +85,6 @@ export default function SwapPage() {
           borderRadius: "8px",
           cursor: loading ? "not-allowed" : "pointer",
           marginRight: "10px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-          transition: "background-color 0.3s ease",
         }}
       >
         {loading ? "⏳ Processing..." : "🚀 Execute Swap"}
@@ -86,8 +103,6 @@ export default function SwapPage() {
           borderRadius: "8px",
           cursor: loading ? "not-allowed" : "pointer",
           marginRight: "10px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-          transition: "background-color 0.3s ease",
         }}
       >
         {loading ? "⏳ Processing..." : "🚀 Execute Fusion+ Swap"}
@@ -105,11 +120,29 @@ export default function SwapPage() {
           border: "none",
           borderRadius: "8px",
           cursor: loading ? "not-allowed" : "pointer",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-          transition: "background-color 0.3s ease",
+          marginRight: "10px",
         }}
       >
         {loading ? "⏳ Checking..." : "🔍 Check Order Status"}
+      </button>
+
+      {/* ✅ Deploy Tron Contract Button */}
+      <button
+        onClick={deployTronContract}
+        disabled={loading}
+        style={{
+          padding: "12px 20px",
+          backgroundColor: loading ? "#aaa" : "#FF5722",
+          color: "#fff",
+          fontSize: "16px",
+          border: "none",
+          borderRadius: "8px",
+          cursor: loading ? "not-allowed" : "pointer",
+          marginTop: "10px",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+        }}
+      >
+        {loading ? "⏳ Deploying..." : "🚀 Deploy Tron Escrow Contract"}
       </button>
 
       {/* Results */}
