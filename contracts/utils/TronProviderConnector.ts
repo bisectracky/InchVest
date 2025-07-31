@@ -1,7 +1,5 @@
 // utils/TronProviderConnector.ts
-// — pull in whatever ‘tronweb’ exports and hunt for the actual constructor
 
-/* eslint-disable @typescript-eslint/no-var-requires */
 const _pkg = require("tronweb");
 
 // Sometimes the class is the default export, sometimes it’s on .TronWeb, sometimes the package

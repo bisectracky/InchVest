@@ -25,11 +25,11 @@ module.exports = {
       userFeePercentage: 50,
       feeLimit: 1000 * 1e6,
       fullHost: 'https://api.shasta.trongrid.io',
-      network_id: '2'
+      network_id: '2',
     },
     nile: {
       // Obtain test coin at https://nileex.io/join/getJoinPage
-      privateKey: process.env.PRIVATE_KEY_NILE,
+      privateKey: "b770847f6934a854c6b67f952ef6837ffb8f8f6ce952bcc3acac57f625b6e618",
       userFeePercentage: 100,
       feeLimit: 1000 * 1e6,
       fullHost: 'https://nile.trongrid.io',

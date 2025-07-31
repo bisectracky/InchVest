@@ -20,7 +20,8 @@
     "react-dom": "19.1.0",
     "react-router-dom": "^7.7.1",
     "recharts": "^3.1.0",
-    "tronweb": "^6.0.3",
+    "tronbox": "^4.2.2",
+    "tronweb": "^6.0.4",
     "viem": "^2.33.1",
     "web3": "^4.16.0"
   },
@@ -31,8 +32,10 @@
     "@types/react-dom": "^19",
     "@types/react-router-dom": "^5.3.3",
     "@types/recharts": "^1.8.29",
+    "ethers": "^6.15.0",
     "hardhat": "^2.26.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "web3-utils": "^4.3.3"
   }
 }
