@@ -1,14 +1,32 @@
 // Market Intelligence Agent - LLM Integration for InchVest
 // Handles market data analysis, sentiment analysis, and trading insights
+// When constructing the agents in your app:
+/*
+const marketIntel = new MarketIntelAgent({
+  tools,
+  rpcUrl: "...",
+  openaiApiKey: process.env.OPENAI_API_KEY // optional if injected only via tool
+}); 
+
+And inside each agent constructor:
+
+constructor(config) {
+  this.tools = config.tools;
+  this.provider = new ethers.providers.JsonRpcProvider(config.rpcUrl);
+}
+*/
 
 import { OpenAI } from 'openai';
 import { ethers } from 'ethers';
+import OpenAILLM from '../llm/OpenAILLM';
 
 class MarketIntelAgent {
   constructor(config) {
+    this.llm = new OpenAILLM(config.openaiApiKey);
     this.openai = new OpenAI({
       apiKey: config.openaiApiKey
     });
+    this.tools = config.tools; // Assuming tools is an instance of LLMTool or similar
     this.provider = new ethers.providers.JsonRpcProvider(config.rpcUrl);
     this.isActive = false;
   }
@@ -38,29 +56,15 @@ class MarketIntelAgent {
     }
 
     try {
-      const response = await this.openai.chat.completions.create({
-        model: "gpt-4",
-        messages: [
-          {
-            role: "system",
-            content: "You are a crypto market analyst. Analyze the given market data and provide sentiment score (-1 to 1), confidence level (0-1), and key insights."
-          },
-          {
-            role: "user",
-            content: `Analyze this market data: ${marketData}`
-          }
-        ],
-        max_tokens: 500,
-        temperature: 0.3
+      const result = await this.tools.llm.run({
+        prompt: marketSentimentPrompt(marketData),
+        role: "You are a crypto market analyst...",
+        options: { max_tokens: 500, temperature: 0.3 }
       });
 
-      const analysis = JSON.parse(response.choices[0].message.content);
-      return {
-        sentiment: analysis.sentiment,
-        confidence: analysis.confidence,
-        insights: analysis.insights,
-        timestamp: Date.now()
-      };
+      if (!result.success) throw new Error(result.error);
+      const analysis = JSON.parse(result.content);
+
     } catch (error) {
       console.error('Error analyzing sentiment:', error);
       throw error;

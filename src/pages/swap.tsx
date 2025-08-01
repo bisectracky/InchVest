@@ -20,9 +20,9 @@ export default function SwapPage() {
 
   const handleFusionSwap = async () => {
     try {
-      const response = await fetch('/api/fusionSwap', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/fusionSwap", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
       });
       const data = await response.json();
       console.log("Fusion+ Order Created:", data);
@@ -35,9 +35,9 @@ export default function SwapPage() {
   const checkOrderStatus = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/fusionStatus', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/fusionStatus", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       });
       const data = await response.json();
       setStatus(JSON.stringify(data, null, 2)); // formatted display
@@ -53,13 +53,15 @@ export default function SwapPage() {
   const deployTronContract = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/deployTron', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/deployTron", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
       });
       const data = await response.json();
-      console.log(data)
-      setResult(`✅ Contract deployed at: ${data.contractAddress || "unknown"}`);
+      console.log(data);
+      setResult(
+        `✅ Contract deployed at: ${data.contractAddress || "unknown"}`
+      );
     } catch (err) {
       console.error("Deployment error:", err);
       setResult("❌ Failed to deploy Tron contract");
@@ -131,7 +133,14 @@ export default function SwapPage() {
       </div>
 
       {status && (
-        <pre style={{ marginTop: 20, padding: 10, background: "#f4f4f4", borderRadius: "8px" }}>
+        <pre
+          style={{
+            marginTop: 20,
+            padding: 10,
+            background: "#f4f4f4",
+            borderRadius: "8px",
+          }}
+        >
           {status}
         </pre>
       )}
