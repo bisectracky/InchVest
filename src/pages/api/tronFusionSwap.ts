@@ -9,7 +9,7 @@ import {
   SDK,
 } from "@1inch/cross-chain-sdk";
 import Web3 from "web3";
-import TronProviderConnector from "../../../contracts/utils/TronProviderConnector";
+import TronProviderConnector from "../../../tronContracts/utils/TronProviderConnector";
 import { randomBytes } from "crypto";
 import type { SupportedChain } from "@1inch/cross-chain-sdk";
 

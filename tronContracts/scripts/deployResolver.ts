@@ -2,6 +2,10 @@ import fs   from "fs";
 import path from "path";
 import TronWeb from "tronweb";
 const _pkg = require("tronweb");
+import dotenv from "dotenv";
+dotenv.config({
+  path: path.resolve(__dirname, "../../.env"),
+});
 
 // your Truffle-style artifact (built by Forge)
 const artifactPath = path.join(__dirname, "../build/contracts/Resolver.json");
@@ -13,8 +17,8 @@ const artifact: {
 } = require(artifactPath);
 
 // ─── CONFIGURE THESE ───────────────────────────────────────────────────────────
-const fullHost   = "https://nile.trongrid.io";
-const privateKey = "b770847f6934a854c6b67f952ef6837ffb8f8f6ce952bcc3acac57f625b6e618";
+const fullHost   = process.env.TRON_FULL_HOST;
+const privateKey = process.env.TRON_PRIVATE_KEY;
 // ────────────────────────────────────────────────────────────────────────────────
 
 // pick the correct TronWeb constructor

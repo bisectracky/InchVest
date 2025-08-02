@@ -1,6 +1,12 @@
 // scripts/deployHTLC.ts
 import "dotenv/config";
 import { keccak256 } from "web3-utils";
+import path from "path";
+import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config({
+  path: path.resolve(__dirname, "../../.env"),
+});
 
 // Hunt for the real TronWeb constructor (ESM vs CJS)
 const _pkg = require("tronweb");
@@ -15,10 +21,10 @@ const artifact = require("../build/contracts/HTLC.json");
 
 async function main() {
   // 1️⃣ Read + validate your env
-  const fullHost = "https://nile.trongrid.io";
-  const privateKey = "b770847f6934a854c6b67f952ef6837ffb8f8f6ce952bcc3acac57f625b6e618";
-  const base58Beneficiary = "TXWeYg6uEiptmiT5owQJhqNrazPzHbAtMA";
-  const secret = "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890";
+  const fullHost = process.env.TRON_FULL_HOST;
+  const privateKey = process.env.TRON_PRIVATE_KEY;
+  const base58Beneficiary = process.env.BENEFICIARY_T_ADDRESS;
+  const secret = process.env.SWAP_SECRET;
 
   if (!fullHost || !privateKey || !base58Beneficiary || !secret) {
     throw new Error("Missing one of: TRON_FULL_HOST, PRIVATE_KEY_NILE, BENEFICIARY_T_ADDRESS, SWAP_SECRET");
