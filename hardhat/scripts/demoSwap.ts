@@ -6,6 +6,23 @@ import fs from "fs"
 import dotenv from "dotenv"
 import factoryJson from "../../tronContracts/build/contracts/TestEscrowFactory.json"
 const TronWebPkg = require("tronweb");
+import Sdk from '@1inch/cross-chain-sdk'
+import {
+  computeAddress,
+  ContractFactory,
+  JsonRpcProvider,
+  MaxUint256,
+  parseEther,
+  parseUnits,
+  randomBytes,
+  Wallet as SignerWallet
+} from 'ethers'
+import deployed from "../deployedAddresses.json"
+import { ChainConfig, config } from '../config/config'
+import {uint8ArrayToHex, UINT_40_MAX} from '@1inch/byte-utils'
+import {
+  Address,
+} from "@1inch/cross-chain-sdk"
 
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") })
@@ -30,6 +47,7 @@ async function main() {
     wallet
   )
   const factory = FactoryCF.attach(SEPOLIA_ESCROW_FACTORY)
+
   const TokenCF = await ethers.getContractFactory("MockERC20", wallet)
   const token = TokenCF.attach(SEPOLIA_TOKEN)
 
@@ -49,7 +67,7 @@ async function main() {
   )
   const resolver = await tronWeb.contract(resolverJson.abi, TRON_RESOLVER)
 
- // ── 4) load the Tron‐side MockERC20 so we can check balances ─────────────
+  // ── 4) load the Tron‐side MockERC20 so we can check balances ─────────────
   const tronMockJson = JSON.parse(
     fs.readFileSync(path.resolve(__dirname, "../../tronContracts/build/contracts/MockERC20.json"), "utf8")
   )
@@ -67,33 +85,97 @@ async function main() {
 
 
   // ── 5) record starting balances ─────────────────────────────────────────
-  const meEvm  = await wallet.getAddress()
+  const meEvm = await wallet.getAddress()
   const meTron = tronWeb.address.fromHex(tronWeb.defaultAddress.hex)
-  const startEvm  = await token.balanceOf(meEvm)
+  const startEvm = await token.balanceOf(meEvm)
   const startTron = await tokenTron.balanceOf(meTron).call()
   console.log(
-    `⚖️  starting balances — Sepolia: ${ethers.formatUnits(startEvm,18)}  |  Tron: ${startTron}`
+    `⚖️  starting balances — Sepolia: ${ethers.formatUnits(startEvm, 18)}  |  Tron: ${startTron}`
   )
 
 
- 
+
   // ── 6) generate HTLC secret & hashlock ──────────────────────────────────
   const secretBytes = ethers.randomBytes(32)
-  const secretHex   = ethers.hexlify(secretBytes)
-  const hashlock    = ethers.keccak256(secretHex)
+  const secretHex = ethers.hexlify(secretBytes)
+  const hashlock = ethers.keccak256(secretHex)
   console.log("🔐 secret:", secretHex)
   console.log("🧩 hashlock:", hashlock)
 
   // ── 7) lock your 1 token into Sepolia HTLC ──────────────────────────────
   // define where on Tron to send funds—and for how long
   const toTronAddr = tronWeb.defaultAddress.hex           // hex‐format of your Tron acct
-  const now        = Math.floor(Date.now() / 1e3)
-  const timelock   = now + 3600                            // 1h expiry
-  console.log(`🚀 Locking ${ethers.formatUnits(amount,18)} token until ${timelock}`)
+  const now = Math.floor(Date.now() / 1e3)
+  const timelock = now + 3600                            // 1h expiry
+  console.log(`🚀 Locking ${ethers.formatUnits(amount, 18)} token until ${timelock}`)
 
- // NB: use factory.address, not .target
+
+  // Here we trying to figure how to fill corssChain swap order
+  const SEP_ESCROW_FACTORY = deployed.Sepolia_EscrowFactory.address;
+  const SEP_RESOLVER = deployed.Sepolia_Resolver.address;
+  const makerAddress = await wallet.getAddress()
+  
+  const srcChainId = config.chain.source.chainId
+  const dstChainId = config.chain.destination.chainId
+  const block = await provider.getBlock("latest")
+  if (!block) {
+    throw new Error("Could not fetch latest block")
+  }
+  const latestTimestamp: bigint = BigInt(block.timestamp)
+
+
+  //Declaring a new order
+  const order = Sdk.CrossChainOrder.new(
+    new Address(SEP_ESCROW_FACTORY),
+    {
+      salt: Sdk.randBigInt(1000n),
+      maker: new Address(makerAddress),
+      makingAmount: parseUnits('5', 6),
+      takingAmount: parseUnits('3', 6),
+      makerAsset: new Address('0xB7eB8AdD336A42FBf5022a0767a579EA54a39177'),
+      takerAsset: new Address("4175155f4d9e0bcd3c974670c901b48ebc04af1721")
+    },
+    {
+      hashLock: Sdk.HashLock.forSingleFill(secretHex),
+      timeLocks: Sdk.TimeLocks.new({
+        srcWithdrawal: 10n, // 10sec finality lock for test
+        srcPublicWithdrawal: 120n, // 2m for private withdrawal
+        srcCancellation: 121n, // 1sec public withdrawal
+        srcPublicCancellation: 122n, // 1sec private cancellation
+        dstWithdrawal: 10n, // 10sec finality lock for test
+        dstPublicWithdrawal: 100n, // 100sec private withdrawal
+        dstCancellation: 101n // 1sec public withdrawal
+      }),
+      srcChainId,
+      dstChainId,
+      srcSafetyDeposit: parseEther('0.001'),
+      dstSafetyDeposit: parseEther('0.001')
+    },
+    {
+      auction: new Sdk.AuctionDetails({
+        initialRateBump: 0,
+        points: [],
+        duration: 120n,
+        startTime: latestTimestamp
+      }),
+      whitelist: [
+        {
+          address: new Address(SEP_RESOLVER),
+          allowFrom: 0n
+        }
+      ],
+      resolvingStartTime: 0n
+    },
+    {
+      nonce: Sdk.randBigInt(UINT_40_MAX),
+      allowPartialFills: false,
+      allowMultipleFills: false
+    }
+  )
+  console.log("IS IT WORKING!!!?!?!?!?", order)
+  // NB: use factory.address, not .target
   await (await token.approve(factory.target, amount)).wait()
-  const lockTx   = await factory.createHTLC(
+  const lockTx = await factory.deploy(
     toTronAddr,
     amount,
     timelock,
@@ -102,9 +184,9 @@ async function main() {
   const lockRcpt = await lockTx.wait()
   console.log("🔒 Locked on Sepolia, tx:", lockRcpt.transactionHash)
 
- // ── 8) grab the swapId from the emitted event ────────────────────────────
+  // ── 8) grab the swapId from the emitted event ────────────────────────────
   const createdEvent = lockRcpt.events?.find(e => e.event === "HTLCCreated")
-                      || lockRcpt.events![0]
+    || lockRcpt.events![0]
   const swapId = createdEvent.args!.swapId.toHexString()
   console.log("🔑 swapId:", swapId)
 
@@ -113,15 +195,15 @@ async function main() {
   const claimTx = await resolver.resolve(swapId, secretHex).send()
   console.log("✅ Claimed on Tron, tx:", claimTx)
 
-   // ── 10) record ending balances & verify ────────────────────────────────
-  const endEvm   = await token.balanceOf(meEvm)
-  const endTron  = await tokenTron.balanceOf(meTron).call()
+  // ── 10) record ending balances & verify ────────────────────────────────
+  const endEvm = await token.balanceOf(meEvm)
+  const endTron = await tokenTron.balanceOf(meTron).call()
   const movedEvm = startEvm.sub(endEvm)                   // BigNumber
   const movedTron = BigInt(endTron) - BigInt(startTron)   // BigInt
   console.log(
-    `⚖️  ending balances — Sepolia: ${ethers.formatUnits(endEvm,18)}  |  Tron: ${endTron}`
+    `⚖️  ending balances — Sepolia: ${ethers.formatUnits(endEvm, 18)}  |  Tron: ${endTron}`
   )
-  console.log(`🔍 delta Sepolia: -${ethers.formatUnits(movedEvm,18)},  Tron: +${movedTron}`)
+  console.log(`🔍 delta Sepolia: -${ethers.formatUnits(movedEvm, 18)},  Tron: +${movedTron}`)
 
   if (movedEvm.eq(amount) && movedTron === 1n) {
     console.log("🎉 Single‐fill swap succeeded: exactly 1 token moved Sepolia→Tron.")
