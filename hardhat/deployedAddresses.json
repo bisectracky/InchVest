@@ -1,0 +1,18 @@
+{
+  "MockERC20": {
+    "address": "0xB7eB8AdD336A42FBf5022a0767a579EA54a39177",
+    "network": "sepolia"
+  },
+  "LimitOrderProtocol": {
+    "address": "0xDe179699174eD396ea4F47FC9da0C28F320B87dE",
+    "network": "sepolia"
+  },
+  "Sepolia_EscrowFactory": {
+    "address": "0x1Af11de45a2bD3Bc5Cc06504C1db3e6406970a6c",
+    "network": "sepolia"
+  },
+  "Sepolia_Resolver": {
+    "address": "0x62933FA9B0Bf57ed1e6d030CAdEA42eAD33D31eE",
+    "network": "sepolia"
+  }
+}

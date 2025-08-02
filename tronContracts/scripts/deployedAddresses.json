@@ -1,10 +1,22 @@
 {
-  "WETH9": {
-    "hex": "414077867205fd6809ef4b5b6d92111f7c3170e180",
-    "base58": "TFr5S6EaozyC8FNWFqNGjQgGUYhSMc4y7B"
-  },
   "LimitOrderProtocol": {
     "hex": "419dfcd0109873d74272621ce2ac962040456f325a",
     "base58": "TQNZwuzMWQXbQzM3NEQtcvE8uGdB1bNCgN"
+  },
+  "Tron_HTLC": {
+    "hex": "415134c7393282ce135ad48a69e52be238fa59dbdb",
+    "base58": "THNaxh6G1pGrXzDpxGXetbiXVGcA4vMnpP"
+  },
+  "MockERC20": {
+    "hex": "4175155f4d9e0bcd3c974670c901b48ebc04af1721",
+    "base58": "TLeHfUWQJ7iGhoz4uFz5xUbvNZKxxuArzi"
+  },
+  "Tron_EscrowFactory": {
+    "hex": "41820ed8b6929bc035891c2e16f7b2f5bf93e8ee04",
+    "base58": "TMptdYzMTMQrGvGFvi6C8hsyLrEexc6LrT"
+  },
+  "Tron_Resolver": {
+    "hex": "41f6dadfa6dd3e23a029e1bc8244fb25429c9d7ee3",
+    "base58": "TYUTRrd9bosUwzDD7vLFpdQk1LuUc84BEV"
   }
 }
