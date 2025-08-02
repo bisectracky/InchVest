@@ -1,6 +1,23 @@
 // Order Execution Agent - LLM Integration for InchVest
 // Handles intelligent order execution, slippage optimization, and trade management
 
+// When constructing the agents in your app:
+/*
+const orderExec = new OrderExecutionAgent({
+  tools,
+  privateKey: "...",
+  rpcUrl: "...",
+});
+
+And inside each agent constructor:
+
+constructor(config) {
+  this.tools = config.tools;
+  this.provider = new ethers.providers.JsonRpcProvider(config.rpcUrl);
+}
+*/
+
+
 import { OpenAI } from 'openai';
 import { ethers } from 'ethers';
 
@@ -9,6 +26,7 @@ class OrderExecutionAgent {
     this.openai = new OpenAI({
       apiKey: config.openaiApiKey
     });
+    this.tools = config.tools; // Assuming tools is an instance of LLMTool or similar
     this.provider = new ethers.providers.JsonRpcProvider(config.rpcUrl);
     this.wallet = new ethers.Wallet(config.privateKey, this.provider);
     this.isActive = false;
@@ -57,22 +75,12 @@ class OrderExecutionAgent {
         5. Split order strategy if needed
       `;
 
-      const response = await this.openai.chat.completions.create({
-        model: "gpt-4",
-        messages: [
-          {
-            role: "system",
-            content: "You are a DeFi trading execution specialist. Analyze order parameters and recommend optimal execution strategies to minimize costs and maximize efficiency."
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ],
-        max_tokens: 800,
-        temperature: 0.2
+      const result = await this.tools.llm.run({
+        prompt: executionStrategyPrompt(orderParams),
+        role: "You are a DeFi execution specialist...",
+        options: { max_tokens: 800, temperature: 0.2 }
       });
-
+      if (!result.success) throw new Error(result.error);
       const strategy = this.parseExecutionStrategy(response.choices[0].message.content);
       return {
         strategy,
