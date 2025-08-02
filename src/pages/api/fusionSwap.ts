@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Helper: Get fresh quote
     const getQuote = async () => {
       return await sdk.getQuote({
-        amount: "5500000000000000", // 0.0055 ETH
+        amount: "1000000000000000", // 0.001 ETH, let's try with this
         srcChainId: NetworkEnum.ARBITRUM,
         dstChainId: NetworkEnum.ETHEREUM,
         enableEstimate: true,
@@ -39,6 +39,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         walletAddress,
       });
     };
+
+    
 
     // Attempt a swap
     const attemptSwap = async () => {

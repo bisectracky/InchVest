@@ -49,25 +49,6 @@ export default function SwapPage() {
     }
   };
 
-  // ✅ NEW: Deploy Tron Escrow Contract
-  const deployTronContract = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('/api/deployTron', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      const data = await response.json();
-      console.log(data)
-      setResult(`✅ Contract deployed at: ${data.contractAddress || "unknown"}`);
-    } catch (err) {
-      console.error("Deployment error:", err);
-      setResult("❌ Failed to deploy Tron contract");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div style={{ padding: 40, fontFamily: "Arial, sans-serif" }}>
       <h1 style={{ marginBottom: 20 }}>💱 Token Swap Testing</h1>
@@ -125,6 +106,34 @@ export default function SwapPage() {
       >
         {loading ? "⏳ Checking..." : "🔍 Check Order Status"}
       </button>
+      {/* Fusion+ ETH→TRON Swap Button */}
+<button
+  onClick={async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/tronFusionSwap", { method: "POST" });
+      const { orderHash } = await res.json();
+      setResult(`🚀 Fusion+ swap started: ${orderHash}`);
+    } catch (e) {
+      setResult("❌ Tron Fusion+ swap failed");
+    } finally {
+      setLoading(false);
+    }
+  }}
+  disabled={loading}
+  style={{
+    padding: "12px 20px",
+    backgroundColor: loading ? "#aaa" : "#E53E3E",
+    color: "#fff",
+    fontSize: "16px",
+    border: "none",
+    borderRadius: "8px",
+    cursor: loading ? "not-allowed" : "pointer",
+    marginRight: "10px",
+  }}
+>
+  {loading ? "⏳ Processing..." : "🌉 ETH → TRON Fusion+ Swap"}
+</button>
       {/* Results */}
       <div style={{ marginTop: 20, fontWeight: "bold", color: "#333" }}>
         {result}

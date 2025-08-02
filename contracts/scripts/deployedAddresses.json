@@ -1,0 +1,10 @@
+{
+  "WETH9": {
+    "hex": "414077867205fd6809ef4b5b6d92111f7c3170e180",
+    "base58": "TFr5S6EaozyC8FNWFqNGjQgGUYhSMc4y7B"
+  },
+  "LimitOrderProtocol": {
+    "hex": "419dfcd0109873d74272621ce2ac962040456f325a",
+    "base58": "TQNZwuzMWQXbQzM3NEQtcvE8uGdB1bNCgN"
+  }
+}
