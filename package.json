@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@1inch/cross-chain-sdk": "^0.1.15",
+    "@modelcontextprotocol/sdk": "^1.17.1",
     "@privy-io/react-auth": "^2.20.0",
     "class-variance-authority": "^0.7.1",
     "dotenv": "^17.2.1",
