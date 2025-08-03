@@ -4,12 +4,19 @@
     "@nomicfoundation/hardhat-toolbox": "^6.1.0",
     "ethers": "^6.15.0",
     "hardhat": "^2.26.1",
+    "patch-package": "^8.0.0",
     "ts-node": "^10.9.2"
   },
+  
   "dependencies": {
     "@1inch/byte-utils": "^3.1.0",
     "@1inch/cross-chain-sdk": "^0.1.15",
     "@nomicfoundation/hardhat-verify": "^2.1.0",
-    "@openzeppelin/contracts": "^5.4.0"
+    "@openzeppelin/contracts": "^5.4.0",
+    "delay": "^6.0.0"
+  },
+  "scripts": {
+    "postinstall": "patch-package"
   }
+
 }
