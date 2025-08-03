@@ -6,7 +6,7 @@ import fs from "fs"
 import dotenv from "dotenv"
 import factoryJson from "../../tronContracts/build/contracts/TestEscrowFactory.json"
 const TronWebPkg = require("tronweb");
-import Sdk from '@1inch/cross-chain-sdk'
+import * as Sdk from "@1inch/cross-chain-sdk"
 import {
   computeAddress,
   ContractFactory,
@@ -21,11 +21,46 @@ import deployed from "../deployedAddresses.json"
 import { ChainConfig, config } from '../config/config'
 import {uint8ArrayToHex, UINT_40_MAX} from '@1inch/byte-utils'
 import {
-  Address,
+  Address
 } from "@1inch/cross-chain-sdk"
-
-
+import delay from "delay"
 dotenv.config({ path: path.resolve(__dirname, "../../.env") })
+
+/**
+ * Send a small TRX transfer, retrying on timeout.
+ */
+async function sendTrxWithRetry(
+  tronWeb: any,
+  to: string,
+  amountSun: number,
+  maxRetries = 5
+): Promise<{ result: boolean; transaction?: any }> {
+  let lastErr: any
+  for (let attempt = 1; attempt <= maxRetries; ++attempt) {
+    try {
+      const tx = await tronWeb.trx.sendTransaction(to, amountSun)
+      return { result: true, transaction: tx }
+    } catch (err: any) {
+      lastErr = err
+      console.warn(`❗️ sendTransaction attempt ${attempt} failed: ${err.message}`)
+      // exponential backoff: wait attempt * 500ms
+      await delay(attempt * 500)
+    }
+  }
+  // all retries exhausted
+  throw new Error(
+    `sendTransaction to ${to} failed after ${maxRetries} attempts: ${lastErr}`
+  )
+}
+
+function tronHexToEvmHex(tronHex: string): string {
+  // tronHex may come from tronWeb.address.toHex(base58) → "41XXXXXXXX…"
+  if (!tronHex.match(/^41[0-9a-fA-F]{40}$/)) {
+    throw new Error("Not a valid Tron hex-address: " + tronHex)
+  }
+  // drop the "41" version‐byte, prefix with "0x"
+  return "0x" + tronHex.slice(2)
+}
 
 async function main() {
   // ── 0) pull in your env vars ───────────────────────────────────────────────
@@ -74,6 +109,7 @@ async function main() {
   if (!TRON_TOKEN) throw new Error("Please set TRON_TOKEN in your .env")
   const tokenTron = await tronWeb.contract(tronMockJson.abi, TRON_TOKEN)
 
+
   // ── 4.1) fund the Tron resolver with 1 token & a bit of TRX for gas ─────
   //    (mimics the "dstChainResolver.topUpFromDonor" step in the 1inch test)
   if (typeof tokenTron.mint === "function") {
@@ -81,7 +117,7 @@ async function main() {
     await tokenTron.mint(TRON_RESOLVER, amount).send()
   }
   console.log("⛽ Sending 1 TRX to Tron resolver for gas…")
-  await tronWeb.trx.sendTransaction(TRON_RESOLVER, 1_000_000)
+  await sendTrxWithRetry(tronWeb, TRON_RESOLVER, 1_000_000)
 
 
   // ── 5) record starting balances ─────────────────────────────────────────
@@ -122,9 +158,9 @@ async function main() {
     throw new Error("Could not fetch latest block")
   }
   const latestTimestamp: bigint = BigInt(block.timestamp)
-
-
+const TRON_TOKEN_EVM_FORMAT   = tronHexToEvmHex('4175155f4d9e0bcd3c974670c901b48ebc04af1721')
   //Declaring a new order
+
   const order = Sdk.CrossChainOrder.new(
     new Address(SEP_ESCROW_FACTORY),
     {
@@ -133,7 +169,7 @@ async function main() {
       makingAmount: parseUnits('5', 6),
       takingAmount: parseUnits('3', 6),
       makerAsset: new Address('0xB7eB8AdD336A42FBf5022a0767a579EA54a39177'),
-      takerAsset: new Address("4175155f4d9e0bcd3c974670c901b48ebc04af1721")
+      takerAsset: new Address('0x75155f4d9e0bcd3c974670c901b48ebc04af1721')
     },
     {
       hashLock: Sdk.HashLock.forSingleFill(secretHex),
@@ -172,6 +208,9 @@ async function main() {
       allowMultipleFills: false
     }
   )
+
+  const signature = await makerAddress.signOrder(srcChainId, order)
+
   console.log("IS IT WORKING!!!?!?!?!?", order)
   // NB: use factory.address, not .target
   await (await token.approve(factory.target, amount)).wait()

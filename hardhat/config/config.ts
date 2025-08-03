@@ -36,13 +36,13 @@ export const config = {
             chainId: 3448148188,
             url: "https://nile.trongrid.io",
             createFork: fromEnv.DST_CHAIN_CREATE_FORK,
-            limitOrderProtocol: '419dfcd0109873d74272621ce2ac962040456f325a',
-            wrappedNative: '4175155f4d9e0bcd3c974670c901b48ebc04af1721',
+            limitOrderProtocol: '0x9dfcd0109873d74272621ce2ac962040456f325a',
+            wrappedNative: '0x75155f4d9e0bcd3c974670c901b48ebc04af1721',
             ownerPrivateKey: 'b770847f6934a854c6b67f952ef6837ffb8f8f6ce952bcc3acac57f625b6e618',
             tokens: {
-                USDC: {
-                    address: '4175155f4d9e0bcd3c974670c901b48ebc04af1721',
-                    donor: '41b9303798ee96c73ccd1fa484fda2f478fb4d6c36'
+                WETH: {
+                    address: '0x75155f4d9e0bcd3c974670c901b48ebc04af1721',
+                    donor: '0x41b9303798ee96c73ccd1fa484fda2f478fb4d6c36'
                 }
             }
         }
