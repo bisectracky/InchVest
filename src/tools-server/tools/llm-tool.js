@@ -1,10 +1,15 @@
 // src/tools/llm-tool.js
 import { OpenAI } from 'openai';
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+import 'dotenv/config';
+
+//const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 
 export class LLMTool {
-  constructor({ apiKey, model }) {
+  constructor({ apiKey, model = 'gpt-4' }) {
+    if (!apiKey) {
+      throw new Error('OPENAI_API_KEY is missing');
+    }
     this.client = new OpenAI({ apiKey });
     this.model = model;
   }
@@ -22,7 +27,29 @@ export class LLMTool {
   }
 }
 
-export const handler = new LLMTool({
-  apiKey: process.env.OPENAI_API_KEY,
-  model: 'gpt-4'
-});
+export async function callLLM({ prompt }) {
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+  const stream = await openai.chat.completions.create({
+    model: 'gpt-4',
+    messages: [{ role: 'user', content: prompt }],
+    stream: true,
+  });
+
+  return stream;
+}
+
+
+export const handler = {
+  async call({ prompt }) {
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: prompt }],
+      stream: true
+    });
+
+    return response;
+  }
+};
